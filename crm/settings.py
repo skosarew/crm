@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
+import smtp_config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -120,3 +121,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+# SMTP configuration
+EMAIL_BACKEND = smtp_config.EMAIL_BACKEND
+EMAIL_HOST = smtp_config.EMAIL_HOST
+EMAIL_PORT = smtp_config.EMAIL_PORT
+EMAIL_USE_TLS = smtp_config.EMAIL_USE_TLS
+EMAIL_HOST_USER = smtp_config.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = smtp_config.EMAIL_HOST_PASSWORD

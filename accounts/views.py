@@ -3,7 +3,6 @@ from django.forms import inlineformset_factory
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
 
 from .decorators import unauthenticated_user, allowed_users, admin_only
 from .models import Product, Order, Customer
