@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 import smtp_config
+import db_config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,8 +77,12 @@ WSGI_APPLICATION = 'crm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': db_config.ENGINE,
+        'NAME': db_config.NAME,
+        'USER': db_config.USER,
+        'PASSWORD': db_config.PASSWORD,
+        'HOST': db_config.HOST,
+        'PORT': db_config.PORT,
     }
 }
 
