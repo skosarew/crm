@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
-import smtp_config
-import db_config
+import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'django_filters',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'crm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': db_config.ENGINE,
-        'NAME': db_config.NAME,
-        'USER': db_config.USER,
-        'PASSWORD': db_config.PASSWORD,
-        'HOST': db_config.HOST,
-        'PORT': db_config.PORT,
+        'ENGINE': config.ENGINE,
+        'NAME': config.NAME,
+        'USER': config.USER,
+        'PASSWORD': config.PASSWORD,
+        'HOST': config.HOST,
+        'PORT': config.PORT,
     }
 }
 
@@ -128,9 +128,21 @@ STATICFILES_DIRS = [
 ]
 
 # SMTP configuration
-EMAIL_BACKEND = smtp_config.EMAIL_BACKEND
-EMAIL_HOST = smtp_config.EMAIL_HOST
-EMAIL_PORT = smtp_config.EMAIL_PORT
-EMAIL_USE_TLS = smtp_config.EMAIL_USE_TLS
-EMAIL_HOST_USER = smtp_config.EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = smtp_config.EMAIL_HOST_PASSWORD
+EMAIL_BACKEND = config.EMAIL_BACKEND
+EMAIL_HOST = config.EMAIL_HOST
+EMAIL_PORT = config.EMAIL_PORT
+EMAIL_USE_TLS = config.EMAIL_USE_TLS
+EMAIL_HOST_USER = config.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = config.EMAIL_HOST_PASSWORD
+
+# S3 BUCKETS CONFIG
+AWS_ACCESS_KEY_ID = config.AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY = config.AWS_SECRET_ACCESS_KEY
+AWS_STORAGE_BUCKET_NAME = config.AWS_STORAGE_BUCKET_NAME
+
+AWS_S3_FILE_OVERWRITE = config.AWS_S3_FILE_OVERWRITE
+AWS_DEFAULT_ACL = config.AWS_DEFAULT_ACL
+DEFAULT_FILE_STORAGE = config.DEFAULT_FILE_STORAGE
+STATICFILES_STORAGE = config.STATICFILES_STORAGE
+AWS_S3_HOST = config.AWS_S3_HOST
+AWS_S3_REGION_NAME = config.AWS_S3_REGION_NAME
