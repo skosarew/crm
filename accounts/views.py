@@ -12,15 +12,15 @@ from .filters import OrderFilter
 
 # Create your views here.
 @login_required(login_url='login')
-@admin_only
+@allowed_users(allowed_roles=['admin', 'agent'])
 def home(request):
-    orders = Order.objects.all()
+    orders = Order.objects.all().order_by('-date_created')[0:5]
     customers = Customer.objects.all()
     total_customers = customers.count()
 
-    total_orders = orders.count()
-    delivered = orders.filter(status='Delivered').count()
-    pending = orders.filter(status='Pending').count()
+    total_orders = Order.objects.all().count()
+    delivered = Order.objects.filter(status='Delivered').count()
+    pending = Order.objects.filter(status='Pending').count()
 
     context = {
         'orders': orders,
@@ -65,6 +65,32 @@ def account_settings(request):
     context = {'form': form}
     return render(request, 'accounts/account_settings.html', context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin', 'agent'])
+def update_customer(request, pk):
+    customer = Customer.objects.get(id=pk)
+    form = CustomerForm(instance=customer)
+
+    if request.method == "POST":
+        form = CustomerForm(request.POST, request.FILES, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('customer', pk)
+
+    context = {'form': form}
+    return render(request, 'accounts/update_customer.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin', 'agent'])
+def create_customer(request):
+    form = CreateUserForm()
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    context = {'form': form}
+    return render(request, 'accounts/create_customer.html', context)
 
 @unauthenticated_user
 def register_page(request):
@@ -102,14 +128,14 @@ def logout_user(request):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'agent'])
 def products(requst):
     products = Product.objects.all()
     return render(requst, 'accounts/products.html', {'products': products})
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'agent'])
 def customer(request, pk):
     customer = Customer.objects.get(id=pk)
     orders = customer.order_set.all()
@@ -127,9 +153,9 @@ def customer(request, pk):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'agent'])
 def create_order(request, pk):
-    OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=5)
+    OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status', 'note'), extra=3)
     customer = Customer.objects.get(id=pk)
     formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
     if request.method == "POST":
@@ -137,25 +163,26 @@ def create_order(request, pk):
         if formset.is_valid():
             formset.save()
             return redirect('/')
-    context = {'formset': formset}
-    return render(request, 'accounts/order_form.html', context)
+    context = {'formset': formset, 'customer': customer}
+    return render(request, 'accounts/create_order.html', context)
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'agent'])
 def update_order(request, pk):
     order = Order.objects.get(id=pk)
     form = OrderForm(instance=order)
+
     if request.method == 'POST':
         form = OrderForm(request.POST, instance=order)
         form.save()
         return redirect('/')
     context = {'form': form}
-    return render(request, 'accounts/order_form.html', context)
+    return render(request, 'accounts/update_order.html', context)
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'agent'])
 def delete_order(request, pk):
     order = Order.objects.get(id=pk)
     if request.method == 'POST':

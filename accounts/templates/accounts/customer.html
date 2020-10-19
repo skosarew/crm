@@ -1,13 +1,15 @@
 {% extends 'accounts/main.html' %}
 {% block content %}
+    {% load widget_tweaks %}
+
     <br>
     <div class="row">
         <div class="col-md">
             <div class="card card-body">
-                <h5>Customer</h5>
+                <h5>Customer: {{ customer.name }}</h5>
                 <hr>
-                <a class="btn btn-outline-info btn-sm btn-block" href="">Update Customer</a>
-                <a class="btn btn-outline-info btn-sm btn-block" href="{% url 'create_order' customer.id %}">Place order</a>
+                <a class="btn btn-outline-info btn-sm btn-block" href="{% url 'update_customer' customer.id %}">Update Customer</a>
+                <a class="btn btn-outline-info btn-sm btn-block" href="{% url 'create_order' customer.id %}">Create order</a>
             </div>
         </div>
 
@@ -34,7 +36,11 @@
         <div class="col">
             <div class="card card-body">
                 <form method="get">
-                    {{ my_filter.form }}
+                    {% for field in my_filter.form %}
+                        {{ field.label }}
+                        {{ field|add_class:'form-control-sm' }}
+                    {% endfor %}
+                    <hr>
                     <button class="btn btn-primary" type="submit">
                         Search
                     </button>
@@ -61,7 +67,7 @@
                             <td>{{ order.product }}</td>
                             <td>{{ order.note }}</td>
                             <td>{{ order.date_created }}</td>
-                            <td>{{ order.status  }}</td>
+                            <td>{{ order.status }}</td>
                             <td><a class="btn btn-sm btn-info" href="{% url 'update_order' order.id %}">Update</a></td>
                             <td><a class="btn btn-sm btn-danger" href="{% url 'delete_order' order.id %}">Remove</a></td>
                         </tr>
@@ -70,4 +76,11 @@
             </div>
         </div>
     </div>
+
+    <script>
+		let form_fields = document.getElementsByTagName('input');
+		form_fields[1].placeholder='16/10/2019';
+		form_fields[2].placeholder='16/10/2020';
+	</script>
+
 {% endblock %}
